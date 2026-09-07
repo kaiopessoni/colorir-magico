@@ -196,6 +196,28 @@ html, body { height:100%; margin:0; padding:0; overflow:hidden; }
   box-shadow:0 8px 20px rgba(180,83,9,.15); padding:10px 12px 12px;
 }
 #colorir-app .cm-gallery-head { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+#colorir-app .cm-mini-actions { display:none; margin-left:auto; gap:6px; }
+#colorir-app .cm-mini {
+  width:42px; height:42px; display:grid; place-items:center; border-radius:14px;
+  background:#f1f5f9; color:#334155; border:2px solid #e2e8f0;
+}
+#colorir-app .cm-mini svg { width:24px; height:24px; }
+#colorir-app .cm-mini[disabled] { opacity:.4; transform:none !important; }
+#colorir-app .cm-mini-save { background:linear-gradient(180deg,#34d399,#059669); color:#fff; border-color:#a7f3d0; }
+#colorir-app .cm-mini-print { background:linear-gradient(180deg,#60a5fa,#2563eb); color:#fff; border-color:#bfdbfe; }
+#colorir-app .cm-gallery-btn {
+  display:none; align-items:center; gap:8px; margin-left:auto;
+  background:linear-gradient(180deg,#fde68a,#f59e0b); color:#7c2d12;
+  border:3px solid #fef3c7; border-radius:16px; padding:8px 14px; font-weight:700; font-size:13px;
+}
+#colorir-app .cm-gallery-btn svg { width:24px; height:24px; }
+#colorir-app .cm-gallery-box { width:min(460px,100%); }
+#colorir-app .cm-modal-cards {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:10px; width:100%;
+  max-height:56vh; overflow-y:auto; padding:4px 2px;
+}
+#colorir-app .cm-modal-cards .cm-card { width:100%; }
+#colorir-app .cm-modal-cards .cm-card .cm-thumb { height:60px; }
 #colorir-app .cm-gallery-head .cm-crumb { font-size:15px; font-weight:700; color:#334155; display:flex; align-items:center; gap:6px; }
 #colorir-app .cm-gallery-head .cm-crumb .cm-crumb-emoji { font-size:22px; }
 #colorir-app .cm-rail { position:relative; display:flex; align-items:center; gap:6px; }
@@ -269,6 +291,19 @@ html, body { height:100%; margin:0; padding:0; overflow:hidden; }
      limpar sobe para a barra vermelha, sobrando tela para desenhar */
   #colorir-app .cm-palette { display:none; }
   #colorir-app .cm-color-btn { display:grid; }
+  /* topbar enxuta: só pincel, tinta, borracha e cor */
+  #colorir-app .cm-pod { display:none; }
+  #colorir-app .cm-actions-group { display:none; }
+  #colorir-app .cm-mini-actions { display:flex; margin-left:0; }
+  /* a galeria vira uma barra fininha: os desenhos vão para a modal */
+  #colorir-app .cm-rail { display:none; }
+  #colorir-app .cm-crumb { display:none; }
+  #colorir-app .cm-gallery-btn { display:flex; }
+  #colorir-app .cm-gallery-head { margin-bottom:0; gap:6px; }
+  #colorir-app .cm-gallery { padding:6px 8px; border-width:3px; }
+  #colorir-app .cm-mini { width:40px; height:40px; }
+  #colorir-app .cm-gallery-btn { padding:7px 12px; }
+  #colorir-app .cm-work { gap:8px; }
   #colorir-app .cm-brand h1 { font-size:17px; }
   #colorir-app .cm-card { width:96px; }
   #colorir-app .cm-tool, #colorir-app .cm-action { width:52px; height:52px; border-radius:17px; }
@@ -314,7 +349,7 @@ html, body { height:100%; margin:0; padding:0; overflow:hidden; }
       </div>
     </div>
 
-    <div class="cm-group">
+    <div class="cm-group cm-actions-group">
       <button class="cm-toy cm-action" id="cm-undo" title="Desfazer" aria-label="Desfazer" disabled>
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>
       </button>
@@ -357,6 +392,21 @@ html, body { height:100%; margin:0; padding:0; overflow:hidden; }
   <footer class="cm-gallery">
     <div class="cm-gallery-head">
       <div class="cm-crumb" id="cm-crumb"><span class="cm-crumb-emoji">✨</span><span id="cm-crumb-text">Escolha uma imagem para colorir</span></div>
+      <button class="cm-toy cm-gallery-btn" id="cm-gallery-btn" title="Escolher desenho">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+        <span>Desenhos</span>
+      </button>
+      <div class="cm-mini-actions">
+        <button class="cm-toy cm-mini" id="cm-undo-2" title="Desfazer" aria-label="Desfazer" disabled>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>
+        </button>
+        <button class="cm-toy cm-mini cm-mini-print" id="cm-print-2" title="Imprimir" aria-label="Imprimir desenho">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
+        </button>
+        <button class="cm-toy cm-mini cm-mini-save" id="cm-save-2" title="Salvar" aria-label="Salvar desenho">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+        </button>
+      </div>
     </div>
     <div class="cm-rail">
       <button class="cm-toy cm-arrow" id="cm-prev" hidden aria-label="Ver anteriores">
@@ -368,6 +418,17 @@ html, body { height:100%; margin:0; padding:0; overflow:hidden; }
       </button>
     </div>
   </footer>
+
+  <!-- ================= MODAL DE DESENHOS (celular) ================= -->
+  <div class="cm-modal" id="cm-gallery-modal" hidden>
+    <div class="cm-modal-box cm-gallery-box">
+      <h3 id="cm-gallery-modal-title">Escolha uma imagem</h3>
+      <div class="cm-modal-cards" id="cm-modal-cards"></div>
+      <div class="cm-modal-actions">
+        <button class="cm-toy cm-no" id="cm-gallery-close">👌 Fechar</button>
+      </div>
+    </div>
+  </div>
 
   <!-- ================= MODAL DE CORES (celular) ================= -->
   <div class="cm-modal" id="cm-color-modal" hidden>
@@ -911,14 +972,15 @@ function buildWall() {
 
 /* ---------- histórico (desfazer) ---------- */
 var hist = [], MAX_HIST = 10;
-var btnUndo = document.getElementById('cm-undo');
+var undoBtns = [document.getElementById('cm-undo'), document.getElementById('cm-undo-2')];
+function setUndoEnabled(on) { for (var i = 0; i < undoBtns.length; i++) undoBtns[i].disabled = !on; }
 function snapshot() {
   if (hist.length >= MAX_HIST) hist.shift();
   var c = document.createElement('canvas');
   c.width = W; c.height = H;
   c.getContext('2d').drawImage(paintCv, 0, 0);
   hist.push(c);
-  btnUndo.disabled = false;
+  setUndoEnabled(true);
 }
 function undo() {
   if (!hist.length) return;
@@ -927,9 +989,9 @@ function undo() {
   pctx.globalCompositeOperation = 'source-over';
   pctx.clearRect(0, 0, W, H);
   pctx.drawImage(c, 0, 0);
-  btnUndo.disabled = hist.length === 0;
+  setUndoEnabled(hist.length > 0);
 }
-function resetHistory() { hist.length = 0; btnUndo.disabled = true; }
+function resetHistory() { hist.length = 0; setUndoEnabled(false); }
 
 /* ---------- carregar desenho ---------- */
 function computeGeometry() {
@@ -1094,14 +1156,15 @@ function setTool(t) {
   toolEmoji.textContent = TOOL_EMOJI[t];
   applyCursor();
 }
-function setSize(v, btn) {
+function setSize(v) {
   size = v;
-  for (var i = 0; i < sizeBtns.length; i++) sizeBtns[i].classList.toggle('is-on', sizeBtns[i] === btn);
+  for (var i = 0; i < sizeBtns.length; i++)
+    sizeBtns[i].classList.toggle('is-on', parseFloat(sizeBtns[i].getAttribute('data-size')) === v);
 }
 for (var i = 0; i < toolBtns.length; i++)
   toolBtns[i].addEventListener('click', function () { setTool(this.getAttribute('data-tool')); });
 for (var j = 0; j < sizeBtns.length; j++)
-  sizeBtns[j].addEventListener('click', function () { setSize(+this.getAttribute('data-size'), this); });
+  sizeBtns[j].addEventListener('click', function () { setSize(parseFloat(this.getAttribute('data-size'))); });
 
 var colorsBox  = document.getElementById('cm-colors');      // barra lateral (desktop)
 var colorGrid  = document.getElementById('cm-color-grid');  // modal (celular)
@@ -1155,42 +1218,56 @@ var btnNext = document.getElementById('cm-next');
 var ICON_BLANK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>';
 var ICON_BACK  = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.8l5.6-5.6L12 4l-8 8 8 8 1.4-1.4L7.8 13H20z"/></svg>';
 
-function makeCard(cls, inner, label, onClick, on) {
+var galleryModal = document.getElementById('cm-gallery-modal');
+var modalCards = document.getElementById('cm-modal-cards');
+var galleryModalTitle = document.getElementById('cm-gallery-modal-title');
+
+function makeCard(box, cls, inner, label, onClick, on) {
   var b = document.createElement('button');
   b.className = 'cm-toy cm-card ' + cls + (on ? ' is-on' : '');
   b.innerHTML = '<span class="cm-thumb">' + inner + '</span><span class="cm-label">' + label + '</span>';
   b.title = label;
   b.addEventListener('click', onClick);
-  cardsBox.appendChild(b);
+  box.appendChild(b);
   return b;
 }
-function renderGallery() {
-  cardsBox.innerHTML = '';
+/* os mesmos cards vão para a barra de baixo (desktop) e para a modal (celular) */
+function fillCards(box, isModal) {
+  box.innerHTML = '';
+  var closeIfModal = function () {
+    if (isModal) setTimeout(function () { galleryModal.hidden = true; }, 140);
+  };
   if (!galleryCat) {
-    crumbEmoji.textContent = '✨';
-    crumbText.textContent = 'Escolha uma imagem para colorir';
-    makeCard('cm-blank', ICON_BLANK, 'Folha em branco', function () {
-      activeTpl = 'blank'; loadTemplate(null); renderGallery();
+    makeCard(box, 'cm-blank', ICON_BLANK, 'Folha em branco', function () {
+      activeTpl = 'blank'; loadTemplate(null); renderGallery(); closeIfModal();
     }, activeTpl === 'blank');
     CM_CATS.forEach(function (cat) {
-      makeCard('cm-cat', '<span>' + cat.e + '</span>', cat.n, function () {
-        galleryCat = cat; renderGallery(); cardsBox.scrollLeft = 0;
+      makeCard(box, 'cm-cat', '<span>' + cat.e + '</span>', cat.n, function () {
+        galleryCat = cat; renderGallery(); cardsBox.scrollLeft = 0; modalCards.scrollTop = 0;
       }, false);
     });
   } else {
-    crumbEmoji.textContent = galleryCat.e;
-    crumbText.textContent = galleryCat.n;
-    makeCard('cm-back', ICON_BACK, 'Voltar', function () {
-      galleryCat = null; renderGallery(); cardsBox.scrollLeft = 0;
+    makeCard(box, 'cm-back', ICON_BACK, 'Voltar', function () {
+      galleryCat = null; renderGallery(); cardsBox.scrollLeft = 0; modalCards.scrollTop = 0;
     }, false);
     galleryCat.items.forEach(function (item) {
-      makeCard('', shapesToSvg(item.s, 4), item.n, function () {
-        activeTpl = item.id; loadTemplate(item.s); renderGallery();
+      makeCard(box, '', shapesToSvg(item.s, 4), item.n, function () {
+        activeTpl = item.id; loadTemplate(item.s); renderGallery(); closeIfModal();
       }, activeTpl === item.id);
     });
   }
+}
+function renderGallery() {
+  crumbEmoji.textContent = galleryCat ? galleryCat.e : '✨';
+  crumbText.textContent = galleryCat ? galleryCat.n : 'Escolha uma imagem para colorir';
+  galleryModalTitle.textContent = galleryCat ? galleryCat.n : 'Escolha uma imagem';
+  fillCards(cardsBox, false);
+  fillCards(modalCards, true);
   setTimeout(updateArrows, 30);
 }
+document.getElementById('cm-gallery-btn').addEventListener('click', function () { galleryModal.hidden = false; });
+document.getElementById('cm-gallery-close').addEventListener('click', function () { galleryModal.hidden = true; });
+galleryModal.addEventListener('click', function (e) { if (e.target === galleryModal) galleryModal.hidden = true; });
 function updateArrows() {
   var over = cardsBox.scrollWidth > cardsBox.clientWidth + 4;
   btnPrev.hidden = !over; btnNext.hidden = !over;
@@ -1217,16 +1294,16 @@ function stamp() {
 }
 
 /* baixar em PNG (melhor formato p/ desenho de contorno: sem borrar, fundo limpo) */
-document.getElementById('cm-save').addEventListener('click', function () {
+function doSave() {
   var a = document.createElement('a');
   a.download = 'colorir-magico-' + stamp() + '.png';
   a.href = compose().toDataURL('image/png');
   document.body.appendChild(a); a.click(); a.remove();
   confetti();
-});
+}
 
 /* imprimir só o desenho, via iframe escondido (não depende de pop-up) */
-document.getElementById('cm-print').addEventListener('click', function () {
+function doPrint() {
   var url = compose().toDataURL('image/png');
   var old = document.getElementById('cm-print-frame');
   if (old) old.remove();
@@ -1250,10 +1327,15 @@ document.getElementById('cm-print').addEventListener('click', function () {
   var img = d.images[0];
   if (img && !img.complete) img.onload = function () { setTimeout(go, 60); };
   else setTimeout(go, 120);
-});
+}
+document.getElementById('cm-save').addEventListener('click', doSave);
+document.getElementById('cm-save-2').addEventListener('click', doSave);
+document.getElementById('cm-print').addEventListener('click', doPrint);
+document.getElementById('cm-print-2').addEventListener('click', doPrint);
 
 /* ---------- desfazer / limpar ---------- */
-btnUndo.addEventListener('click', undo);
+undoBtns[0].addEventListener('click', undo);
+undoBtns[1].addEventListener('click', undo);
 var modal = document.getElementById('cm-modal');
 document.getElementById('cm-clear').addEventListener('click', function () { modal.hidden = false; });
 document.getElementById('cm-clear-mobile').addEventListener('click', function () {
@@ -1268,7 +1350,7 @@ document.getElementById('cm-modal-yes').addEventListener('click', function () {
 modal.addEventListener('click', function (e) { if (e.target === modal) modal.hidden = true; });
 document.addEventListener('keydown', function (e) {
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') { e.preventDefault(); undo(); }
-  if (e.key === 'Escape') { modal.hidden = true; colorModal.hidden = true; }
+  if (e.key === 'Escape') { modal.hidden = true; colorModal.hidden = true; galleryModal.hidden = true; }
 });
 
 /* ---------- confetes ao salvar ---------- */
@@ -1333,9 +1415,18 @@ if (window.ResizeObserver) new ResizeObserver(relayout).observe(stage);
 window.addEventListener('resize', relayout);
 window.addEventListener('orientationchange', function () { setTimeout(relayout, 300); });
 
+/* no celular não há seletor de espessura: sempre o pincel médio */
+var mqMobile = window.matchMedia ? window.matchMedia('(max-width:860px)') : null;
+function syncMobile() { if (mqMobile && mqMobile.matches) setSize(4.4); }
+if (mqMobile) {
+  if (mqMobile.addEventListener) mqMobile.addEventListener('change', syncMobile);
+  else if (mqMobile.addListener) mqMobile.addListener(syncMobile);
+}
+
 /* ---------- partiu! ---------- */
 setTool('brush');
 setColor(COLORS[0][0]);
+syncMobile();
 renderGallery();
 computeGeometry();
 loadTemplate(null);
