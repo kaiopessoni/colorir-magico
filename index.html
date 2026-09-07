@@ -36,6 +36,8 @@ html, body { height:100%; margin:0; padding:0; overflow:hidden; }
   user-select:none; -webkit-user-select:none;
   background:linear-gradient(180deg,#dbeafe 0%,#fef3c7 55%,#ffedd5 100%);
   width:100%; height:100vh; height:100svh; overflow:hidden;
+  touch-action:manipulation;          /* mata o zoom de toque-duplo */
+  -webkit-text-size-adjust:100%;
   display:flex; flex-direction:column; gap:10px;
   padding:12px; overscroll-behavior:none;
 }
@@ -43,7 +45,8 @@ html, body { height:100%; margin:0; padding:0; overflow:hidden; }
 #colorir-app > header, #colorir-app > main, #colorir-app > footer {
   width:100%; max-width:1300px; margin-inline:auto;
 }
-#colorir-app button { font:inherit; color:inherit; border:0; background:none; cursor:pointer; }
+#colorir-app button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
+  touch-action:manipulation; }
 #colorir-app svg { display:block; }
 
 /* ---------- botão de brinquedo (3D tátil) ---------- */
@@ -1422,6 +1425,12 @@ if (mqMobile) {
   if (mqMobile.addEventListener) mqMobile.addEventListener('change', syncMobile);
   else if (mqMobile.addListener) mqMobile.addListener(syncMobile);
 }
+
+/* nada de pinça/zoom acidental enquanto a criança pinta (iOS ignora o
+   user-scalable=no da meta viewport, então bloqueamos o gesto na mão) */
+['gesturestart', 'gesturechange', 'gestureend'].forEach(function (ev) {
+  document.addEventListener(ev, function (e) { e.preventDefault(); }, { passive: false });
+});
 
 /* ---------- partiu! ---------- */
 setTool('brush');
