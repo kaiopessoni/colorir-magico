@@ -103,6 +103,24 @@ html, body { height:100%; margin:0; padding:0; overflow:hidden; }
   border:3px solid #fff; background:#fff; color:#334155; }
 #colorir-app .cm-action svg { width:32px; height:32px; }
 #colorir-app .cm-action.cm-save { background:linear-gradient(180deg,#34d399,#059669); color:#fff; border-color:#a7f3d0; }
+/* só aparecem no celular */
+#colorir-app .cm-color-btn { display:none; }
+#colorir-app .cm-color-btn {
+  width:52px; height:52px; place-items:center; border-radius:17px;
+  background:#fff; border:3px solid #fff;
+}
+#colorir-app .cm-color-btn-chip {
+  width:30px; height:30px; border-radius:50%; background:#ef4444;
+  border:3px solid #fff; box-shadow:0 0 0 2px rgba(15,23,42,.25), inset 0 2px 4px rgba(0,0,0,.25);
+}
+#colorir-app .cm-color-box { width:min(400px,100%); }
+#colorir-app .cm-color-grid {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:14px 12px; width:100%; padding:6px 4px;
+  place-items:center;
+}
+#colorir-app .cm-color-grid .cm-swatch { width:100%; max-width:62px; height:auto; max-height:none; aspect-ratio:1/1; }
+#colorir-app .cm-clear-in-modal { background:#0f172a; color:#fff; }
+#colorir-app .cm-clear-in-modal svg { width:20px; height:20px; }
 #colorir-app .cm-action.cm-print { background:linear-gradient(180deg,#60a5fa,#2563eb); color:#fff; border-color:#bfdbfe; }
 #colorir-app .cm-action[disabled] { opacity:.45; cursor:default; transform:none !important; }
 
@@ -238,18 +256,20 @@ html, body { height:100%; margin:0; padding:0; overflow:hidden; }
 @keyframes cm-fall { to { transform:translateY(110vh) rotate(720deg); opacity:0; } }
 
 /* ---------- responsivo ---------- */
+@media (max-width:600px) {
+  #colorir-app .cm-brand h1, #colorir-app .cm-brand div { display:none; }
+  #colorir-app .cm-brand { padding-inline:0; }
+}
 @media (max-width:860px) {
   #colorir-app { padding:10px; gap:8px; }
   #colorir-app .cm-brand p { display:none; }
   #colorir-app .cm-brand h1 { font-size:18px; }
   #colorir-app .cm-work { flex-direction:column; }
-  #colorir-app .cm-palette { width:100%; flex-direction:row; flex-wrap:wrap; justify-content:space-between; padding:8px 10px; }
-  #colorir-app .cm-palette-title { display:none; }
-  #colorir-app .cm-palette-main { display:contents; }
-  #colorir-app .cm-colors { grid-template-columns:repeat(9,1fr); grid-auto-rows:auto; order:1; flex:1 1 100%; padding:8px 10px; overflow:visible; }
-  #colorir-app .cm-swatch { height:auto; width:100%; max-width:38px; max-height:38px; }
-  #colorir-app .cm-current { order:2; }
-  #colorir-app .cm-clear { order:3; width:auto; padding:10px 18px; }
+  /* no celular a barra lateral some: as cores vão para a modal e o
+     limpar sobe para a barra vermelha, sobrando tela para desenhar */
+  #colorir-app .cm-palette { display:none; }
+  #colorir-app .cm-color-btn { display:grid; }
+  #colorir-app .cm-brand h1 { font-size:17px; }
   #colorir-app .cm-card { width:96px; }
   #colorir-app .cm-tool, #colorir-app .cm-action { width:52px; height:52px; border-radius:17px; }
   #colorir-app .cm-tool svg, #colorir-app .cm-action svg { width:29px; height:29px; }
@@ -279,6 +299,11 @@ html, body { height:100%; margin:0; padding:0; overflow:hidden; }
       </button>
       <button class="cm-toy cm-tool" data-tool="eraser" title="Borracha — apagar" aria-label="Borracha">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.24 3.56l4.95 4.94c.78.79.78 2.05 0 2.84L12 20.53a4.008 4.008 0 0 1-5.66 0L2.81 17c-.78-.79-.78-2.05 0-2.84l10.6-10.6c.79-.78 2.05-.78 2.83 0M4.22 15.58l3.54 3.53c.78.79 2.04.79 2.83 0l3.53-3.53-4.95-4.95-4.95 4.95z"/></svg>
+      </button>
+
+      <!-- cor ativa: no celular abre a modal de cores (a barra lateral fica escondida) -->
+      <button class="cm-toy cm-color-btn" id="cm-color-btn" title="Escolher a cor" aria-label="Escolher a cor">
+        <span class="cm-color-btn-chip" id="cm-color-btn-chip"></span>
       </button>
 
       <!-- espessuras -->
@@ -343,6 +368,22 @@ html, body { height:100%; margin:0; padding:0; overflow:hidden; }
       </button>
     </div>
   </footer>
+
+  <!-- ================= MODAL DE CORES (celular) ================= -->
+  <div class="cm-modal" id="cm-color-modal" hidden>
+    <div class="cm-modal-box cm-color-box">
+      <span class="cm-modal-emoji">🌈</span>
+      <h3>Escolha uma cor</h3>
+      <div class="cm-color-grid" id="cm-color-grid"></div>
+      <div class="cm-modal-actions">
+        <button class="cm-toy cm-no" id="cm-color-close">👌 Fechar</button>
+        <button class="cm-toy cm-clear-in-modal" id="cm-clear-mobile">
+          <svg viewBox="0 0 24 24" fill="#fb7185"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+          Limpar
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- ================= MODAL LIMPAR ================= -->
   <div class="cm-modal" id="cm-modal" hidden>
@@ -1062,26 +1103,47 @@ for (var i = 0; i < toolBtns.length; i++)
 for (var j = 0; j < sizeBtns.length; j++)
   sizeBtns[j].addEventListener('click', function () { setSize(+this.getAttribute('data-size'), this); });
 
-var colorsBox = document.getElementById('cm-colors');
-COLORS.forEach(function (c, idx) {
-  var b = document.createElement('button');
-  b.className = 'cm-swatch' + (idx === 0 ? ' is-on' : '');
-  b.style.background = c[0];
-  b.title = c[1];
-  b.setAttribute('aria-label', c[1]);
-  if (c[0] === '#ffffff') b.style.borderColor = '#cbd5e1';
-  b.addEventListener('click', function () {
-    color = c[0];
-    var all = colorsBox.querySelectorAll('.cm-swatch');
-    for (var k = 0; k < all.length; k++) all[k].classList.remove('is-on');
-    b.classList.add('is-on');
-    chip.style.background = c[0];
-    if (tool === 'eraser') setTool('brush');   // criança escolheu cor: volta pro pincel
-    else applyCursor();
-    pop(b);
+var colorsBox  = document.getElementById('cm-colors');      // barra lateral (desktop)
+var colorGrid  = document.getElementById('cm-color-grid');  // modal (celular)
+var colorBtn   = document.getElementById('cm-color-btn');
+var colorChip  = document.getElementById('cm-color-btn-chip');
+var colorModal = document.getElementById('cm-color-modal');
+var swatches = [];
+
+function setColor(hex, fromEl) {
+  color = hex;
+  for (var k = 0; k < swatches.length; k++)
+    swatches[k].classList.toggle('is-on', swatches[k].getAttribute('data-color') === hex);
+  chip.style.background = hex;
+  colorChip.style.background = hex;
+  colorChip.style.borderColor = (hex === '#ffffff') ? '#cbd5e1' : '#fff';
+  if (tool === 'eraser') setTool('brush');   // criança escolheu cor: volta pro pincel
+  else applyCursor();
+  if (fromEl) pop(fromEl);
+}
+function buildSwatches(box, closeAfter) {
+  COLORS.forEach(function (c) {
+    var b = document.createElement('button');
+    b.className = 'cm-swatch';
+    b.style.background = c[0];
+    b.title = c[1];
+    b.setAttribute('data-color', c[0]);
+    b.setAttribute('aria-label', c[1]);
+    if (c[0] === '#ffffff') b.style.borderColor = '#cbd5e1';
+    b.addEventListener('click', function () {
+      setColor(c[0], b);
+      if (closeAfter) setTimeout(function () { colorModal.hidden = true; }, 130);
+    });
+    swatches.push(b);
+    box.appendChild(b);
   });
-  colorsBox.appendChild(b);
-});
+}
+buildSwatches(colorsBox, false);
+buildSwatches(colorGrid, true);
+
+colorBtn.addEventListener('click', function () { colorModal.hidden = false; });
+document.getElementById('cm-color-close').addEventListener('click', function () { colorModal.hidden = true; });
+colorModal.addEventListener('click', function (e) { if (e.target === colorModal) colorModal.hidden = true; });
 
 /* ---------- galeria (categorias -> desenhos) ---------- */
 var cardsBox = document.getElementById('cm-cards');
@@ -1194,6 +1256,9 @@ document.getElementById('cm-print').addEventListener('click', function () {
 btnUndo.addEventListener('click', undo);
 var modal = document.getElementById('cm-modal');
 document.getElementById('cm-clear').addEventListener('click', function () { modal.hidden = false; });
+document.getElementById('cm-clear-mobile').addEventListener('click', function () {
+  colorModal.hidden = true; modal.hidden = false;
+});
 document.getElementById('cm-modal-no').addEventListener('click', function () { modal.hidden = true; });
 document.getElementById('cm-modal-yes').addEventListener('click', function () {
   modal.hidden = true;
@@ -1203,7 +1268,7 @@ document.getElementById('cm-modal-yes').addEventListener('click', function () {
 modal.addEventListener('click', function (e) { if (e.target === modal) modal.hidden = true; });
 document.addEventListener('keydown', function (e) {
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') { e.preventDefault(); undo(); }
-  if (e.key === 'Escape') modal.hidden = true;
+  if (e.key === 'Escape') { modal.hidden = true; colorModal.hidden = true; }
 });
 
 /* ---------- confetes ao salvar ---------- */
@@ -1269,8 +1334,8 @@ window.addEventListener('resize', relayout);
 window.addEventListener('orientationchange', function () { setTimeout(relayout, 300); });
 
 /* ---------- partiu! ---------- */
-chip.style.background = color;
 setTool('brush');
+setColor(COLORS[0][0]);
 renderGallery();
 computeGeometry();
 loadTemplate(null);
