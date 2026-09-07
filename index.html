@@ -45,8 +45,8 @@ html, body { height:100%; margin:0; padding:0; overflow:hidden; }
 #colorir-app > header, #colorir-app > main, #colorir-app > footer {
   width:100%; max-width:1300px; margin-inline:auto;
 }
-#colorir-app button { font:inherit; color:inherit; border:0; background:none; cursor:pointer;
-  touch-action:manipulation; }
+#colorir-app button { font:inherit; color:inherit; border:0; background:none; cursor:pointer; }
+#colorir-app * { touch-action:manipulation; }   /* nenhum ponto da tela aceita toque-duplo p/ zoom */
 #colorir-app svg { display:block; }
 
 /* ---------- botão de brinquedo (3D tátil) ---------- */
@@ -125,7 +125,7 @@ html, body { height:100%; margin:0; padding:0; overflow:hidden; }
 #colorir-app .cm-clear-in-modal { background:#0f172a; color:#fff; }
 #colorir-app .cm-clear-in-modal svg { width:20px; height:20px; }
 #colorir-app .cm-action.cm-print { background:linear-gradient(180deg,#60a5fa,#2563eb); color:#fff; border-color:#bfdbfe; }
-#colorir-app .cm-action[disabled] { opacity:.45; cursor:default; transform:none !important; }
+#colorir-app .cm-action.is-off { opacity:.45; cursor:default; transform:none !important; box-shadow:0 5px 0 rgba(0,0,0,.2) !important; }
 
 /* ---------- área de trabalho ---------- */
 #colorir-app .cm-work { flex:1 1 auto; display:flex; gap:10px; align-items:stretch; min-height:0; }
@@ -205,7 +205,7 @@ html, body { height:100%; margin:0; padding:0; overflow:hidden; }
   background:#f1f5f9; color:#334155; border:2px solid #e2e8f0;
 }
 #colorir-app .cm-mini svg { width:24px; height:24px; }
-#colorir-app .cm-mini[disabled] { opacity:.4; transform:none !important; }
+#colorir-app .cm-mini.is-off { opacity:.4; cursor:default; transform:none !important; box-shadow:0 5px 0 rgba(0,0,0,.2) !important; }
 #colorir-app .cm-mini-save { background:linear-gradient(180deg,#34d399,#059669); color:#fff; border-color:#a7f3d0; }
 #colorir-app .cm-mini-print { background:linear-gradient(180deg,#60a5fa,#2563eb); color:#fff; border-color:#bfdbfe; }
 #colorir-app .cm-gallery-btn {
@@ -353,7 +353,7 @@ html, body { height:100%; margin:0; padding:0; overflow:hidden; }
     </div>
 
     <div class="cm-group cm-actions-group">
-      <button class="cm-toy cm-action" id="cm-undo" title="Desfazer" aria-label="Desfazer" disabled>
+      <button class="cm-toy cm-action is-off" id="cm-undo" title="Desfazer" aria-label="Desfazer" aria-disabled="true">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>
       </button>
       <button class="cm-toy cm-action cm-print" id="cm-print" title="Imprimir meu desenho" aria-label="Imprimir desenho">
@@ -400,7 +400,7 @@ html, body { height:100%; margin:0; padding:0; overflow:hidden; }
         <span>Desenhos</span>
       </button>
       <div class="cm-mini-actions">
-        <button class="cm-toy cm-mini" id="cm-undo-2" title="Desfazer" aria-label="Desfazer" disabled>
+        <button class="cm-toy cm-mini is-off" id="cm-undo-2" title="Desfazer" aria-label="Desfazer" aria-disabled="true">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>
         </button>
         <button class="cm-toy cm-mini cm-mini-print" id="cm-print-2" title="Imprimir" aria-label="Imprimir desenho">
@@ -976,7 +976,12 @@ function buildWall() {
 /* ---------- histórico (desfazer) ---------- */
 var hist = [], MAX_HIST = 10;
 var undoBtns = [document.getElementById('cm-undo'), document.getElementById('cm-undo-2')];
-function setUndoEnabled(on) { for (var i = 0; i < undoBtns.length; i++) undoBtns[i].disabled = !on; }
+function setUndoEnabled(on) {
+  for (var i = 0; i < undoBtns.length; i++) {
+    undoBtns[i].classList.toggle('is-off', !on);
+    undoBtns[i].setAttribute('aria-disabled', on ? 'false' : 'true');
+  }
+}
 function snapshot() {
   if (hist.length >= MAX_HIST) hist.shift();
   var c = document.createElement('canvas');
