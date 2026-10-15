@@ -41,7 +41,7 @@ html, body { height:100%; margin:0; padding:0; overflow:hidden; }
   display:flex; flex-direction:column; gap:10px;
   padding:12px; overscroll-behavior:none;
 }
-/* conteúdo centralizado, limitado a 1300px (x1.25 a partir de 1920); abaixo disso ocupa a tela toda */
+/* conteúdo centralizado, limitado a 1300px; abaixo disso ocupa a tela toda */
 #colorir-app > header, #colorir-app > main, #colorir-app > footer {
   width:100%; max-width:1300px; margin-inline:auto;
 }
@@ -292,10 +292,6 @@ html, body { height:100%; margin:0; padding:0; overflow:hidden; }
 @keyframes cm-fall { to { transform:translateY(110vh) rotate(720deg); opacity:0; } }
 
 /* ---------- responsivo ---------- */
-/* telas grandes: tudo 25% maior (o mesmo que o zoom de 125% do navegador) */
-@media (min-width:1920px) {
-  #colorir-app { zoom:1.25; height:calc(100svh / 1.25); }
-}
 @media (max-width:600px) {
   #colorir-app .cm-brand h1, #colorir-app .cm-brand div { display:none; }
   #colorir-app .cm-brand { padding-inline:0; }
@@ -1431,10 +1427,9 @@ function moveGhost(e) {
   if (tool === 'bucket') { ghost.style.opacity = 0; return; }
   var rs = stage.getBoundingClientRect(), rp = paper.getBoundingClientRect();
   var d = brushPx() * (rp.width / W);
-  var z = rs.width / stage.offsetWidth || 1;   // zoom de CSS (telas grandes)
-  ghost.style.width = d / z + 'px'; ghost.style.height = d / z + 'px';
-  ghost.style.left = (e.clientX - rs.left) / z + 'px';
-  ghost.style.top = (e.clientY - rs.top) / z + 'px';
+  ghost.style.width = d + 'px'; ghost.style.height = d + 'px';
+  ghost.style.left = (e.clientX - rs.left) + 'px';
+  ghost.style.top = (e.clientY - rs.top) + 'px';
   ghost.style.background = (tool === 'eraser') ? 'rgba(255,255,255,.75)' : color + '55';
   ghost.style.opacity = 1;
 }
